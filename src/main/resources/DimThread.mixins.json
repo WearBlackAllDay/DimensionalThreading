@@ -6,7 +6,6 @@
   "mixins": [
     "MinecraftServerMixin",
     "ServerChunkManagerMixin",
-    "ThreadExecutorMixin",
     "WorldMixin"
   ],
   "client": [
