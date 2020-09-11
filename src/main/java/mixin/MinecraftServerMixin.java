@@ -1,96 +1,80 @@
 package mixin;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.ServerNetworkIo;
-import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.TestManager;
-import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.GameRules;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.tools.obfuscation.interfaces.IJavadocProvider;
 import other.DimThread;
 import other.ThreadPool;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 
-	private static boolean DEBUG = false;
+	private ThreadPool pool = new ThreadPool(3);
 
-	@Shadow private Profiler profiler;
 	@Shadow private int ticks;
 	@Shadow private PlayerManager playerManager;
-	@Shadow @Final private List<Runnable> serverGuiTickables;
-
-	@Shadow public abstract ServerNetworkIo getNetworkIo();
-	@Shadow public abstract CommandFunctionManager getCommandFunctionManager();
 	@Shadow public abstract Iterable<ServerWorld> getWorlds();
 
-	private ThreadPool pool = new ThreadPool(Runtime.getRuntime().availableProcessors());
+	/**
+	 * Returns an empty iterator to stop {@code MinecraftServer#tickWorlds} from ticking
+	 * dimensions. This behaviour is overwritten below.
+	 *
+	 * @see MinecraftServerMixin#tickWorlds(BooleanSupplier, CallbackInfo)
+	 * */
+	@ModifyVariable(method = "tickWorlds", at = @At(value = "INVOKE_ASSIGN",
+			target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;", ordinal = 0))
+	public Iterator<?> tickWorlds(Iterator<?> oldValue) {
+		return Collections.emptyIterator();
+	}
 
 	/**
-	 * @author
-	 */
-	@Overwrite
-	public void tickWorlds(BooleanSupplier shouldKeepTicking) {
-		this.profiler.push("commandFunctions");
-		this.getCommandFunctionManager().tick();
-		this.profiler.swap("levels");
-
-		if(DEBUG)System.out.format("==================================================\n");
-
+	 * Distributes world ticking over 3 worker threads (one for each dimension) and waits until
+	 * they are all complete.
+	 * */
+	@Inject(method = "tickWorlds", at = @At(value = "INVOKE",
+			target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"))
+	public void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
 
 		this.pool.iterate(this.getWorlds().iterator(), serverWorld -> {
 			DimThread.attach(Thread.currentThread(), serverWorld);
-			//String dimensionName = serverWorld.getDimension().getSkyProperties().getPath();
-
-			//if(DEBUG)System.out.format("[%d] Started %s\n", this.ticks, dimensionName);
 
 			if(this.ticks % 20 == 0) {
-				this.playerManager.sendToDimension(new WorldTimeUpdateS2CPacket(serverWorld.getTime(), serverWorld.getTimeOfDay(), serverWorld.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), serverWorld.getRegistryKey());
+				WorldTimeUpdateS2CPacket timeUpdatePacket = new WorldTimeUpdateS2CPacket(
+						serverWorld.getTime(), serverWorld.getTimeOfDay(),
+						serverWorld.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE));
+
+				this.playerManager.sendToDimension(timeUpdatePacket, serverWorld.getRegistryKey());
 			}
 
 			try {
-				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking), serverWorld, serverWorld.getChunkManager());
+				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking),
+						serverWorld,
+						serverWorld.getChunkManager()
+				);
+
 			} catch(Throwable var6) {
 				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
 				serverWorld.addDetailsToCrashReport(crashReport.get());
 			}
-
-			//if(DEBUG)System.out.format("[%d] Finished %s\n", this.ticks, dimensionName);
 		});
 
 		this.pool.awaitCompletion();
-
-		if(crashReport.get() != null) {
-			throw new CrashException(crashReport.get());
-		}
-
-		if(DEBUG)System.out.format("Ticking completed!\n");
-
-		this.profiler.swap("connection");
-		this.getNetworkIo().tick();
-		this.profiler.swap("players");
-		this.playerManager.updatePlayerLatency();
-		if (SharedConstants.isDevelopment) {
-			TestManager.INSTANCE.tick();
-		}
-
-		this.profiler.swap("server gui refresh");
-
-		this.serverGuiTickables.forEach(Runnable::run);
-		this.profiler.pop();
 	}
+
 }
