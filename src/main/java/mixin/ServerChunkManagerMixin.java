@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import other.IMutableServerThread;
+import other.IMutableMainThread;
 
 @Mixin(ServerChunkManager.class)
-public class ServerChunkManagerMixin implements IMutableServerThread {
+public class ServerChunkManagerMixin implements IMutableMainThread {
 
 	@Shadow @Final public ThreadedAnvilChunkStorage threadedAnvilChunkStorage;
 	@Mutable @Shadow @Final private Thread serverThread;
@@ -27,12 +27,12 @@ public class ServerChunkManagerMixin implements IMutableServerThread {
 	}
 
 	@Override
-	public Thread getServerThread() {
+	public Thread getMainThread() {
 		return this.serverThread;
 	}
 
 	@Override
-	public void setServerThread(Thread thread) {
+	public void setMainThread(Thread thread) {
 		this.serverThread = thread;
 	}
 

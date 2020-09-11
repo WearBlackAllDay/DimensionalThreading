@@ -10,10 +10,10 @@
   "environment": "*",
 
   "mixins": [
-    "DimThread.mixins.json"
+    "dimthread.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.9.3+build.207",
-    "minecraft": "1.16.2"
+    "minecraft": "1.16.3"
   }
 }
