@@ -4,16 +4,12 @@
   "version": "${version}",
   "name": "DimensionalThreading",
   "description": "An attempt to optimize the fabric server, by assigning each dimension their own thread.",
-  "authors": [],
-  "contact": {},
   "license": "MIT",
-  "environment": "*",
-
+  "environment": "server",
   "mixins": [
     "dimthread.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.9.3+build.207",
-    "minecraft": "1.16.3"
   }
 }
