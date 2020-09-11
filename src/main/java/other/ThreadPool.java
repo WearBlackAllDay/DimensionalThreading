@@ -3,15 +3,15 @@ package other;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
 
 public class ThreadPool {
 
     private ThreadPoolExecutor executor;
     private final int threadCount;
 
-    private final AtomicInteger activeCount = new AtomicInteger();
+    private final IntLatch activeCount = new IntLatch(0);
 
     public ThreadPool(int threadCount) {
         this.threadCount = threadCount;
@@ -27,11 +27,11 @@ public class ThreadPool {
     }
 
     public void run(Runnable action) {
-        this.activeCount.getAndIncrement();
+        this.activeCount.increment();
 
         this.executor.execute(() -> {
             action.run();
-            activeCount.getAndDecrement();
+            activeCount.decrement();
         });
     }
 
@@ -44,16 +44,18 @@ public class ThreadPool {
     }
 
     public void awaitFreeThread() {
-        while(this.activeCount.get() >= this.getThreadCount()) {
-            try {Thread.sleep(5);}
-            catch(InterruptedException ignored) {}
-        }
+        this.waitUntil(value -> value < this.getThreadCount());
     }
 
     public void awaitCompletion() {
-        while(this.activeCount.get() != 0) {
-            try {Thread.sleep(5);}
-            catch(InterruptedException ignored) {}
+        this.waitUntil(value -> value == 0);
+    }
+
+    public void waitUntil(IntPredicate condition) {
+        try {
+            this.activeCount.waitUntil(condition);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

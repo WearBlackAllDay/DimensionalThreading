@@ -4,6 +4,7 @@ import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.tools.obfuscation.interfaces.IJavadocProvider;
 import other.DimThread;
 import other.ThreadPool;
 
@@ -63,11 +63,7 @@ public abstract class MinecraftServerMixin {
 			}
 
 			try {
-				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking),
-						serverWorld,
-						serverWorld.getChunkManager()
-				);
-
+				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking), serverWorld, serverWorld.getChunkManager());
 			} catch(Throwable var6) {
 				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
 				serverWorld.addDetailsToCrashReport(crashReport.get());
@@ -75,6 +71,10 @@ public abstract class MinecraftServerMixin {
 		});
 
 		this.pool.awaitCompletion();
+
+		if(crashReport.get() != null) {
+			throw new CrashException(crashReport.get());
+		}
 	}
 
 }
