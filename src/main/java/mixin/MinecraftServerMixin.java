@@ -92,5 +92,4 @@ public abstract class MinecraftServerMixin {
 
 		this.profiler.pop();
 	}
-
 }
