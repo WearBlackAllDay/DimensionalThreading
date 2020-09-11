@@ -17,7 +17,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:0.9.3+build.207"
 
     //Fabric api
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.20.2+build.402-1.16"
+    //modImplementation "net.fabricmc.fabric-api:fabric-api:0.20.2+build.402-1.16"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.

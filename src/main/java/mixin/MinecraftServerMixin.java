@@ -16,10 +16,11 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import other.IMutableServerThread;
+import other.DimThread;
 import other.ThreadPool;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
@@ -49,31 +50,34 @@ public abstract class MinecraftServerMixin {
 
 		if(DEBUG)System.out.format("==================================================\n");
 
+		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
+
 		this.pool.iterate(this.getWorlds().iterator(), serverWorld -> {
-//			String dimensionName = serverWorld.getDimension().getSkyProperties().getPath();
-//			Thread.currentThread().setName("dimthreading_" + dimensionName);
-//			if(DEBUG)System.out.format("[%d] Started %s\n", this.ticks, dimensionName);
+			DimThread.attach(Thread.currentThread(), serverWorld);
+			//String dimensionName = serverWorld.getDimension().getSkyProperties().getPath();
+
+			//if(DEBUG)System.out.format("[%d] Started %s\n", this.ticks, dimensionName);
 
 			if(this.ticks % 20 == 0) {
 				this.playerManager.sendToDimension(new WorldTimeUpdateS2CPacket(serverWorld.getTime(), serverWorld.getTimeOfDay(), serverWorld.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)), serverWorld.getRegistryKey());
 			}
 
 			try {
-				IMutableServerThread manager = (IMutableServerThread)serverWorld.getChunkManager();
-				Thread oldServerThread = manager.getServerThread();
-				manager.setServerThread(Thread.currentThread());
-				serverWorld.tick(shouldKeepTicking);
-				manager.setServerThread(oldServerThread);
+				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking), serverWorld, serverWorld.getChunkManager());
 			} catch(Throwable var6) {
-				CrashReport crashReport = CrashReport.create(var6, "Exception ticking world");
-				serverWorld.addDetailsToCrashReport(crashReport);
-				throw new CrashException(crashReport);
+				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
+				serverWorld.addDetailsToCrashReport(crashReport.get());
 			}
 
-//			if(DEBUG)System.out.format("[%d] Finished %s\n", this.ticks, dimensionName);
+			//if(DEBUG)System.out.format("[%d] Finished %s\n", this.ticks, dimensionName);
 		});
 
 		this.pool.awaitCompletion();
+
+		if(crashReport.get() != null) {
+			throw new CrashException(crashReport.get());
+		}
+
 		if(DEBUG)System.out.format("Ticking completed!\n");
 
 		this.profiler.swap("connection");
@@ -86,10 +90,7 @@ public abstract class MinecraftServerMixin {
 
 		this.profiler.swap("server gui refresh");
 
-		for (Runnable serverGuiTickable : this.serverGuiTickables) {
-			serverGuiTickable.run();
-		}
-
+		this.serverGuiTickables.forEach(Runnable::run);
 		this.profiler.pop();
 	}
 

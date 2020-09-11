@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MinecraftServerMixin",
-    "ServerChunkManagerMixin"
+    "ServerChunkManagerMixin",
+    "ThreadExecutorMixin",
+    "WorldMixin"
   ],
   "client": [
   ],
