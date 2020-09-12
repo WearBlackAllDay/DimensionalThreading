@@ -50,7 +50,7 @@ public abstract class RedstoneWireBlockMixin {
 	}
 
 	/**
-	 * @author KaptainWutax
+	 * @author DimensionalThreading (WearBlackAllDay)
 	 * @reason Made redstone thread-safe, please inject in the caller.
 	 */
 	@Overwrite
@@ -59,7 +59,7 @@ public abstract class RedstoneWireBlockMixin {
 	}
 
 	/**
-	 * @author KaptainWutax
+	 * @author DimensionalThreading (WearBlackAllDay)
 	 * @reason Made redstone thread-safe, please inject in the caller.
 	 */
 	@Overwrite
@@ -68,7 +68,7 @@ public abstract class RedstoneWireBlockMixin {
 	}
 
 	/**
-	 * @author KaptainWutax
+	 * @author DimensionalThreading (WearBlackAllDay)
 	 * @reason Made redstone thread-safe, please inject in the caller.
 	 */
 	@Overwrite
