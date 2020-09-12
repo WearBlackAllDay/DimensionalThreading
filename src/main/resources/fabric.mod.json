@@ -7,10 +7,9 @@
   "license": "MIT",
   "environment": "*",
   "mixins": [
-    "dimthread.mixins.json"
+    "DimThread.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.9.3+build.207",
-    "minecraft": "*"
+    "fabricloader": ">=0.9.3+build.207"
   }
 }
