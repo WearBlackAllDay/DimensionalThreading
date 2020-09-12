@@ -1,12 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "mixin",
+  "package": "dimthread.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MinecraftServerMixin",
     "ServerChunkManagerMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "RedstoneWireBlockMixin"
   ],
   "client": [
   ],
