@@ -1,4 +1,4 @@
-package other;
+package dimthread.other;
 
 import net.minecraft.server.world.ServerWorld;
 

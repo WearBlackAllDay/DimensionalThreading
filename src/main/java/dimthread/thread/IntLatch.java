@@ -1,4 +1,4 @@
-package other;
+package dimthread.thread;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.function.IntPredicate;

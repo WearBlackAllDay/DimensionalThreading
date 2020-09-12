@@ -1,4 +1,4 @@
-package other;
+package dimthread.other;
 
 import java.util.Iterator;
 import java.util.concurrent.Executors;

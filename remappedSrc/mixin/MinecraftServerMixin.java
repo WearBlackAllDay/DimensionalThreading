@@ -1,4 +1,4 @@
-package mixin;
+package dimthread.mixin;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import other.DimThread;
-import other.IMutableServerThread;
-import other.ThreadPool;
+import dimthread.other.DimThread;
+import dimthread.other.IMutableServerThread;
+import dimthread.other.ThreadPool;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;

@@ -1,4 +1,4 @@
-package other;
+package dimthread.other;
 
 public interface IMutableServerThread {
 
