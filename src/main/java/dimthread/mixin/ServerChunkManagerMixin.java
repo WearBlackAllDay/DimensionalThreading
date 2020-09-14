@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerChunkManager.class)
-public class ServerChunkManagerMixin implements IMutableMainThread {
+public abstract class ServerChunkManagerMixin implements IMutableMainThread {
 
 	@Shadow @Final public ThreadedAnvilChunkStorage threadedAnvilChunkStorage;
 	@Mutable @Shadow @Final private Thread serverThread;
 
 	@Inject(method = "getTotalChunksLoadedCount", at = @At("HEAD"), cancellable = true)
-	public void getTotalChunksLoadedCount(CallbackInfoReturnable<Integer> ci) {
+	private void getTotalChunksLoadedCount(CallbackInfoReturnable<Integer> ci) {
 		if(FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			int count = this.threadedAnvilChunkStorage.getTotalChunksLoadedCount();
 			if(count < 441)ci.setReturnValue(441);
