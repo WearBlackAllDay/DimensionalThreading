@@ -9,7 +9,8 @@
     "WorldMixin",
     "RedstoneWireBlockMixin",
     "ServerWorldMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "ServerPlayerEntityMixin"
   ],
   "client": [
   ],
