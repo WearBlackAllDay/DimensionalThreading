@@ -31,7 +31,7 @@ public class ThreadPool {
 
         this.executor.execute(() -> {
             action.run();
-            activeCount.decrement();
+            this.activeCount.decrement();
         });
     }
 
