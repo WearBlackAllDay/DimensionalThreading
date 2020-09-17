@@ -1,28 +1,25 @@
 package dimthread.mixin;
 
+import dimthread.DimThread;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-	@Redirect(method = "moveToWorld", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/server/world/ServerWorld;onDimensionChanged(Lnet/minecraft/entity/Entity;)V"))
-	public void onDimensionChanged(ServerWorld world, Entity entity) {
-		world.getServer().execute(() -> {
-			world.onDimensionChanged(entity);
-		});
-	}
+	@Shadow public abstract Entity moveToWorld(ServerWorld destination);
 
-	@Redirect(method = "moveToWorld", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/server/world/ServerWorld;createEndSpawnPlatform(Lnet/minecraft/server/world/ServerWorld;)V"))
-	public void createEndSpawnPlatform(ServerWorld world) {
-		world.getServer().execute(() -> {
-			ServerWorld.createEndSpawnPlatform(world);
-		});
+	@Inject(method = "moveToWorld", at = @At("HEAD"), cancellable = true)
+	public void moveToWorld(ServerWorld destination, CallbackInfoReturnable<Entity> ci) {
+		if(DimThread.owns(Thread.currentThread())) {
+			destination.getServer().execute(() -> this.moveToWorld(destination));
+			ci.setReturnValue(null);
+		}
 	}
 
 }
