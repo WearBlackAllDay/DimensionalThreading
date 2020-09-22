@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
@@ -50,6 +51,7 @@ public abstract class MinecraftServerMixin {
 			target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"))
 	public void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
+		AtomicInteger completed = new AtomicInteger();
 
 		this.pool.iterate(this.getWorlds().iterator(), serverWorld -> {
 			DimThread.attach(Thread.currentThread(), serverWorld);
@@ -63,7 +65,14 @@ public abstract class MinecraftServerMixin {
 			}
 
 			try {
-				DimThread.swapThreadsAndRun(() -> serverWorld.tick(shouldKeepTicking), serverWorld, serverWorld.getChunkManager());
+				DimThread.swapThreadsAndRun(() -> {
+					serverWorld.tick(shouldKeepTicking);
+					completed.getAndIncrement();
+
+					while(completed.get() != 3) {
+						serverWorld.getChunkManager().executeQueuedTasks();
+					}
+				}, serverWorld, serverWorld.getChunkManager());
 			} catch(Throwable var6) {
 				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
 				serverWorld.addDetailsToCrashReport(crashReport.get());

@@ -24,7 +24,11 @@ public class DimThread {
 	}
 
 	public static void attach(Thread thread, ServerWorld world) {
-		thread.setName(MOD_ID + "_" + world.getRegistryKey().getValue().getPath());
+		attach(thread, world.getRegistryKey().getValue().getPath());
+	}
+
+	public static void attach(Thread thread, String name) {
+		thread.setName(MOD_ID + "_" + name);
 	}
 
 	public static boolean owns(Thread thread) {
