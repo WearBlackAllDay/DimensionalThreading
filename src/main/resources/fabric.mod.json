@@ -6,6 +6,11 @@
   "description": "An attempt to optimize the fabric server, by assigning each dimension their own thread.",
   "license": "MIT",
   "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dimthread.DimThread"
+    ]
+  },
   "mixins": [
     "dimthread.mixins.json"
   ],

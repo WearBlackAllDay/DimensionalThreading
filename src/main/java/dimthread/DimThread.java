@@ -1,11 +1,21 @@
 package dimthread;
 
+import dimthread.command.Commands;
+import dimthread.command.ThreadCountCommand;
 import dimthread.thread.IMutableMainThread;
+import dimthread.thread.ThreadPool;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.world.ServerWorld;
 
-public class DimThread {
+public class DimThread implements ModInitializer {
 
 	public static final String MOD_ID = "dimthread";
+	public static ThreadPool THREAD_POOL = new ThreadPool(3);
+
+	@Override
+	public void onInitialize() {
+		Commands.INSTANCE.registerCommand(new ThreadCountCommand());
+	}
 
 	public static void swapThreadsAndRun(Runnable task, Object... threadedObjects) {
 		Thread currentThread = Thread.currentThread();

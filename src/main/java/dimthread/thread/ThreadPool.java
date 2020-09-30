@@ -3,8 +3,11 @@ package dimthread.thread;
 import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Consumer;
-import java.util.function.IntPredicate;
+import java.util.function.*;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 public class ThreadPool {
 
@@ -35,12 +38,64 @@ public class ThreadPool {
         });
     }
 
+    public <T> void iterate(Iterator<T> iterator, Consumer<T> action) {
+        iterator.forEachRemaining(t -> this.run(() -> action.accept(t)));
+    }
+
     public <T> void iterate(Iterable<T> iterable, Consumer<T> action) {
         iterable.forEach(t -> this.run(() -> action.accept(t)));
     }
 
-    public <T> void iterate(Iterator<T> iterator, Consumer<T> action) {
-        iterator.forEachRemaining(t -> this.run(() -> action.accept(t)));
+    public <T> void iterate(Stream<T> stream, Consumer<T> action) {
+        stream.forEach(t -> this.run(() -> action.accept(t)));
+    }
+
+    public void iterate(IntStream stream, IntConsumer action) {
+        stream.forEach(t -> this.run(() -> action.accept(t)));
+    }
+
+    public void iterate(LongStream stream, LongConsumer action) {
+        stream.forEach(t -> this.run(() -> action.accept(t)));
+    }
+
+    public void iterate(DoubleStream stream, DoubleConsumer action) {
+        stream.forEach(t -> this.run(() -> action.accept(t)));
+    }
+
+    public <T> void iterate(T[] array, Consumer<T> action) {
+        for(T t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(boolean[] array, Consumer<Boolean> action) {
+        for(boolean t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(byte[] array, Consumer<Byte> action) {
+        for(byte t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(short[] array, Consumer<Short> action) {
+        for(short t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(int[] array, IntConsumer action) {
+        for(int t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(float[] array, Consumer<Float> action) {
+        for(float t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(long[] array, LongConsumer action) {
+        for(long t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(double[] array, DoubleConsumer action) {
+        for(double t: array)this.run(() -> action.accept(t));
+    }
+
+    public void iterate(char[] array, Consumer<Character> action) {
+        for(char t: array)this.run(() -> action.accept(t));
     }
 
     public void awaitFreeThread() {
