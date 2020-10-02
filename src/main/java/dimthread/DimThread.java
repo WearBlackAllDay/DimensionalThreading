@@ -1,20 +1,27 @@
 package dimthread;
 
-import dimthread.command.Commands;
-import dimthread.command.ThreadCountCommand;
 import dimthread.thread.IMutableMainThread;
 import dimthread.thread.ThreadPool;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.GameRules;
 
 public class DimThread implements ModInitializer {
 
 	public static final String MOD_ID = "dimthread";
+
+	public static final GameRules.Type<GameRules.IntRule> THREAD_COUNT = GameRuleFactory
+			.createIntRule(3, 0, Runtime.getRuntime().availableProcessors(),
+					(server, intRule) -> THREAD_POOL = new ThreadPool(intRule.get()));
+
 	public static ThreadPool THREAD_POOL = new ThreadPool(3);
 
 	@Override
 	public void onInitialize() {
-		Commands.INSTANCE.registerCommand(new ThreadCountCommand());
+		//Commands.INSTANCE.registerCommand(new ThreadCountCommand());
+		GameRuleRegistry.register("dimensionThreadCount", GameRules.Category.UPDATES, THREAD_COUNT);
 	}
 
 	public static void swapThreadsAndRun(Runnable task, Object... threadedObjects) {

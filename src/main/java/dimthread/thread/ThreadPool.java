@@ -25,6 +25,10 @@ public class ThreadPool {
         return this.threadCount;
     }
 
+    public int getActiveCount() {
+        return this.activeCount.getCount();
+    }
+
     public ThreadPoolExecutor getExecutor() {
         return this.executor;
     }

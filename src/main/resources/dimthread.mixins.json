@@ -9,7 +9,8 @@
     "RedstoneWireBlockMixin",
     "ServerChunkManagerMixin",
     "CommandManagerMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "EntityMixin"
   ],
   "client": [
   ],

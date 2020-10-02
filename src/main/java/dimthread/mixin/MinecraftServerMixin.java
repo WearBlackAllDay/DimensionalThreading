@@ -1,6 +1,7 @@
 package dimthread.mixin;
 
 import dimthread.DimThread;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
@@ -48,7 +49,7 @@ public abstract class MinecraftServerMixin {
 			target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;"))
 	public void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
-		AtomicInteger completed = new AtomicInteger();
+		Set<ServerWorld> completed = new ConcurrentSet<>();
 
 		DimThread.THREAD_POOL.iterate(this.getWorlds().iterator(), serverWorld -> {
 			DimThread.attach(Thread.currentThread(), serverWorld);
@@ -64,11 +65,7 @@ public abstract class MinecraftServerMixin {
 			try {
 				DimThread.swapThreadsAndRun(() -> {
 					serverWorld.tick(shouldKeepTicking);
-					completed.getAndIncrement();
-
-					while(completed.get() != 3) {
-						serverWorld.getChunkManager().executeQueuedTasks();
-					}
+					completed.add(serverWorld);
 				}, serverWorld, serverWorld.getChunkManager());
 			} catch(Throwable var6) {
 				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
@@ -76,11 +73,14 @@ public abstract class MinecraftServerMixin {
 			}
 		});
 
-		DimThread.THREAD_POOL.awaitCompletion();
+		//TODO: Something more competent...
+		while(DimThread.THREAD_POOL.getActiveCount() > 0) {
+			completed.forEach(world -> world.getChunkManager().executeQueuedTasks());
+		}
 
 		if(crashReport.get() != null) {
 			throw new CrashException(crashReport.get());
 		}
 	}
-
+	
 }
