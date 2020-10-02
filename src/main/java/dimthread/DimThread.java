@@ -20,7 +20,6 @@ public class DimThread implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//Commands.INSTANCE.registerCommand(new ThreadCountCommand());
 		GameRuleRegistry.register("dimensionThreadCount", GameRules.Category.UPDATES, THREAD_COUNT);
 	}
 
@@ -40,14 +39,20 @@ public class DimThread implements ModInitializer {
 		}
 	}
 
-	public static void attach(Thread thread, ServerWorld world) {
-		attach(thread, world.getRegistryKey().getValue().getPath());
-	}
-
+	/**
+	 * Makes it easy to understand what is happening in crash reports and helps identify dimthread workers.
+	 * */
 	public static void attach(Thread thread, String name) {
 		thread.setName(MOD_ID + "_" + name);
 	}
 
+	public static void attach(Thread thread, ServerWorld world) {
+		attach(thread, world.getRegistryKey().getValue().getPath());
+	}
+
+	/**
+	 * Checks if the given thread is a dimthread worker by checking the name. Probably quite fragile...
+	 * */
 	public static boolean owns(Thread thread) {
 		return thread.getName().startsWith(MOD_ID);
 	}
