@@ -1,6 +1,7 @@
 package dimthread.mixin;
 
 import dimthread.DimThread;
+import dimthread.thread.ThreadPool;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -51,7 +52,9 @@ public abstract class MinecraftServerMixin {
 		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
 		Set<ServerWorld> completed = new ConcurrentSet<>();
 
-		DimThread.THREAD_POOL.iterate(this.getWorlds().iterator(), serverWorld -> {
+		ThreadPool pool = DimThread.getThreadPool((MinecraftServer)(Object)this);
+
+		pool.iterate(this.getWorlds().iterator(), serverWorld -> {
 			DimThread.attach(Thread.currentThread(), serverWorld);
 
 			if(this.ticks % 20 == 0) {
@@ -74,7 +77,7 @@ public abstract class MinecraftServerMixin {
 		});
 
 		//TODO: Something more competent...
-		while(DimThread.THREAD_POOL.getActiveCount() > 0) {
+		while(pool.getActiveCount() > 0) {
 			completed.forEach(world -> world.getChunkManager().executeQueuedTasks());
 		}
 

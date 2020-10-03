@@ -4,11 +4,9 @@
   "package": "dimthread.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CommandManagerMixin",
     "MinecraftServerMixin",
     "RedstoneWireBlockMixin",
     "ServerChunkManagerMixin",
-    "CommandManagerMixin",
     "WorldMixin",
     "EntityMixin"
   ],

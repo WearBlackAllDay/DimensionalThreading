@@ -3,24 +3,21 @@ package dimthread;
 import dimthread.thread.IMutableMainThread;
 import dimthread.thread.ThreadPool;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.GameRules;
 
 public class DimThread implements ModInitializer {
 
 	public static final String MOD_ID = "dimthread";
-
-	public static final GameRules.Type<GameRules.IntRule> THREAD_COUNT = GameRuleFactory
-			.createIntRule(3, 0, Runtime.getRuntime().availableProcessors(),
-					(server, intRule) -> THREAD_POOL = new ThreadPool(intRule.get()));
-
-	public static ThreadPool THREAD_POOL = new ThreadPool(3);
+	private static final ThreadManager MANAGER = new ThreadManager();
 
 	@Override
 	public void onInitialize() {
-		GameRuleRegistry.register("dimensionThreadCount", GameRules.Category.UPDATES, THREAD_COUNT);
+		MANAGER.onInitialize();
+	}
+
+	public static ThreadPool getThreadPool(MinecraftServer server) {
+		return MANAGER.getThreadPool(server);
 	}
 
 	public static void swapThreadsAndRun(Runnable task, Object... threadedObjects) {
