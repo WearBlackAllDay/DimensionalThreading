@@ -18,8 +18,8 @@ Once you have installed Fabric, move the`DimThread.jar`and the`Fabric-API.jar`in
 ### Configuration
 
 ##### DimThread comes with 2 native Gamerules:
-`/gamerule dimthread_active <true/false>` enables/disables the mod
-`/gamerule dimthread_thread_count <count>`changes the amount of threads used
+- `/gamerule dimthread_active <true/false>` enables/disables the mod
+- `/gamerule dimthread_thread_count <count>`changes the amount of threads used
 
 ### FAQ
 
