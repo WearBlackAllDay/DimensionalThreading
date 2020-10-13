@@ -2,10 +2,10 @@ package dimthread;
 
 import dimthread.init.ModGameRules;
 import dimthread.thread.IMutableMainThread;
-import dimthread.thread.ThreadPool;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import threading.ThreadPool;
 
 public class DimThread implements ModInitializer {
 

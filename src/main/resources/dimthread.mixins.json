@@ -4,7 +4,6 @@
   "package": "dimthread.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ChunkGeneratorAccessor",
     "EntityMixin",
     "MinecraftServerMixin",
     "RedstoneWireBlockMixin",
