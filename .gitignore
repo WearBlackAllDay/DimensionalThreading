@@ -4,6 +4,7 @@
 *.iml
 *.ipr
 *.iws
+remmapedSrc/
 
 # IntelliJ
 out/
