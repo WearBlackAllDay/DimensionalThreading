@@ -21,24 +21,24 @@ DimThread comes with 2 native Gamerules:
 `/gamerule dimthread_active <true/false>` enables/disables the mod
 `/gamerule dimthread_thread_count <count>`changes the amount of threads used
 
-###FAQ
+### FAQ
 
-#####Does the mod change Vanilla behaviour?
+##### Does the mod change Vanilla behaviour?
 DimThread aims to conserve vanilla-parity in all points. At the moment there are no known deviations in behaviour from Mojangs`server.jar`. If you notice any, feel free to [open an issue.](https://github.com/WearBlackAllDay/DimensionalThreading/issues)
 
-#####Can my dimensions get de-synchronized?
+##### Can my dimensions get de-synchronized?
 As stated above this is **NOT** the case. DimThread will always synchronize the dimensions it threads with each other, setting the overall MSPT to the slowest individual dimension.
 
-#####Are dimension counts above 3 supported?
+##### Are dimension counts above 3 supported?
 Yes, but you will have to adjust the GameRule accordingly.
 
-#####Will the server run faster if assign more than 3 threads to DimThread?
+##### Will the server run faster if assign more than 3 threads to DimThread?
 No, the mod can only assign one dimension to one thread.
 
-#####Can i use DimThread if i have less threads on my CPU than dimensions?
+##### Can i use DimThread if i have less threads on my CPU than dimensions?
 The mod will not crash if you do not have enough threads available, but it will make the game **slower**. You should always have atleast`DimensionCount + 1`threads available.
 
-#####What about older versions of Minecraft?
+##### What about older versions of Minecraft?
 DimThread is written with 1.16 compatibility in mind, older versions are currently not considered. If you play on 1.12 you can use a similar project maintained by [2No2Name](https://github.com/2No2Name).
 
 ---
