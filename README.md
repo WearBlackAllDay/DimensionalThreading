@@ -38,6 +38,9 @@ No, the mod can only assign one dimension to one thread.
 ##### Can i use DimThread if i have less threads on my CPU than dimensions?
 The mod will not crash if you do not have enough threads available, but it will make the game **slower**. You should always have atleast`DimensionCount + 1`threads available.
 
+##### How is the compatibility with other mods?
+Compatibility with [JellySquids](https://github.com/jellysquid3) performance mods and [Carpet](https://github.com/gnembon/fabric-carpet) will be ensured and issues concerning them are accepted. If you plan on using a different mod compatibility cannot be guaranteed, since not every author writes their mod threadsafe.
+
 ##### What about older versions of Minecraft?
 DimThread is written with 1.16 compatibility in mind, older versions are currently not considered. If you play on 1.12 you can use a similar project maintained by [2No2Name](https://github.com/2No2Name).
 
