@@ -20,6 +20,7 @@ minecraft {
 
 dependencies {
     implementation 'com.github.WearBlackAllDay:JavaUtils:ab1e0ad736be1d2c2d74c68fa8e9e40e752f2d18'
+    include 'com.github.WearBlackAllDay:JavaUtils:ab1e0ad736be1d2c2d74c68fa8e9e40e752f2d18'
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:1.16.3"
     mappings "net.fabricmc:yarn:1.16.3+build.1:v2"
