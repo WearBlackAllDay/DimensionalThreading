@@ -1,5 +1,6 @@
 package dimthread;
 
+import dimthread.init.ModGameRules;
 import dimthread.thread.IMutableMainThread;
 import dimthread.thread.ThreadPool;
 import net.fabricmc.api.ModInitializer;
@@ -9,11 +10,11 @@ import net.minecraft.server.world.ServerWorld;
 public class DimThread implements ModInitializer {
 
 	public static final String MOD_ID = "dimthread";
-	private static final ThreadManager MANAGER = new ThreadManager();
+	public static final ServerManager MANAGER = new ServerManager();
 
 	@Override
 	public void onInitialize() {
-		MANAGER.onInitialize();
+		ModGameRules.registerGameRules();
 	}
 
 	public static ThreadPool getThreadPool(MinecraftServer server) {

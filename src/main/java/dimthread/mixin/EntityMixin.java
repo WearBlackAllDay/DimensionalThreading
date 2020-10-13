@@ -23,6 +23,8 @@ public abstract class EntityMixin {
 	 * */
 	@Inject(method = "moveToWorld", at = @At("HEAD"), cancellable = true)
 	public void moveToWorld(ServerWorld destination, CallbackInfoReturnable<Entity> ci) {
+		if(!DimThread.MANAGER.isActive(destination.getServer()))return;
+
 		if(DimThread.owns(Thread.currentThread())) {
 			destination.getServer().execute(() -> this.moveToWorld(destination));
 			ci.setReturnValue(null);
