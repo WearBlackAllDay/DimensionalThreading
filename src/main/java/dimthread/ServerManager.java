@@ -37,4 +37,5 @@ public class ServerManager {
 		this.threadPools.put(server, new ThreadPool(value.get()));
 		current.shutdown();
 	}
+
 }
