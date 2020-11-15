@@ -65,10 +65,6 @@ public abstract class MinecraftServerMixin {
 			DimThread.swapThreadsAndRun(() -> {
 				try {
 					serverWorld.tick(shouldKeepTicking);
-
-					if(((Object)null).equals("s")) {
-						System.out.println("hi");
-					}
 				} catch(Throwable throwable) {
 					crash.set(new CrashInfo(serverWorld, throwable));
 				}
