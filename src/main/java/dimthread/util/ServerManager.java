@@ -1,4 +1,4 @@
-package dimthread;
+package dimthread.util;
 
 import dimthread.init.ModGameRules;
 import net.minecraft.server.MinecraftServer;

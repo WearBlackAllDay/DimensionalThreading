@@ -1,12 +1,11 @@
 package dimthread.mixin;
 
 import dimthread.DimThread;
+import dimthread.util.CrashInfo;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,7 +48,7 @@ public abstract class MinecraftServerMixin {
 	public void tickWorlds(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		if(!DimThread.MANAGER.isActive((MinecraftServer)(Object)this))return;
 
-		AtomicReference<CrashReport> crashReport = new AtomicReference<>();
+		AtomicReference<CrashInfo> crash = new AtomicReference<>();
 		ThreadPool pool = DimThread.getThreadPool((MinecraftServer)(Object)this);
 
 		pool.execute(this.getWorlds().iterator(), serverWorld -> {
@@ -63,20 +62,23 @@ public abstract class MinecraftServerMixin {
 				this.playerManager.sendToDimension(timeUpdatePacket, serverWorld.getRegistryKey());
 			}
 
-			try {
-				DimThread.swapThreadsAndRun(() -> {
+			DimThread.swapThreadsAndRun(() -> {
+				try {
 					serverWorld.tick(shouldKeepTicking);
-				}, serverWorld, serverWorld.getChunkManager());
-			} catch(Throwable var6) {
-				crashReport.set(CrashReport.create(var6, "Exception ticking world"));
-				serverWorld.addDetailsToCrashReport(crashReport.get());
-			}
+
+					if(((Object)null).equals("s")) {
+						System.out.println("hi");
+					}
+				} catch(Throwable throwable) {
+					crash.set(new CrashInfo(serverWorld, throwable));
+				}
+			}, serverWorld, serverWorld.getChunkManager());
 		});
 
 		pool.awaitCompletion();
 
-		if(crashReport.get() != null) {
-			throw new CrashException(crashReport.get());
+		if(crash.get() != null) {
+			crash.get().crash("Exception ticking world");
 		}
 	}
 	

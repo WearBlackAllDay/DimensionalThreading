@@ -2,6 +2,7 @@ package dimthread;
 
 import dimthread.init.ModGameRules;
 import dimthread.thread.IMutableMainThread;
+import dimthread.util.ServerManager;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
