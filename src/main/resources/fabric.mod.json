@@ -16,6 +16,7 @@
   ],
   "accessWidener": "dimthread.accesswidener",
   "depends": {
-    "fabricloader": ">=0.9.3+build.207"
+    "fabricloader": ">=0.9.3+build.207",
+    "minecraft": "1.16.x"
   }
 }
