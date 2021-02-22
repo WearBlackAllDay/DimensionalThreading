@@ -77,5 +77,13 @@ public abstract class MinecraftServerMixin {
 			crash.get().crash("Exception ticking world");
 		}
 	}
-	
+
+	/**
+	 * Shutdown all threadpools when the server stop.
+	 * Prevent server hang when stopping the server.
+	 * */
+	@Inject(method = "shutdown", at = @At("HEAD"))
+	public void shutdownThreadpool(CallbackInfo ci) {
+		DimThread.MANAGER.threadPools.forEach((server, pool) -> pool.shutdown());
+	}
 }
