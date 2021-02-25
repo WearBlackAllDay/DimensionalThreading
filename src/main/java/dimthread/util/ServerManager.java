@@ -13,7 +13,7 @@ import java.util.WeakHashMap;
 public class ServerManager {
 
 	private final Map<MinecraftServer, Boolean> actives = Collections.synchronizedMap(new WeakHashMap<>());
-	private final Map<MinecraftServer, ThreadPool> threadPools = Collections.synchronizedMap(new WeakHashMap<>());
+	public final Map<MinecraftServer, ThreadPool> threadPools = Collections.synchronizedMap(new WeakHashMap<>());
 
 	public boolean isActive(MinecraftServer server) {
 		return this.actives.computeIfAbsent(server, s -> s.getGameRules().get(ModGameRules.ACTIVE.getKey()).get());
