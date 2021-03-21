@@ -5,6 +5,7 @@
   "name": "DimensionalThreading",
   "description": "An attempt to optimize the fabric server, by assigning each dimension their own thread.",
   "license": "MIT",
+  "icon": "assets/dimthread/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
