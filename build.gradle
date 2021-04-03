@@ -22,12 +22,12 @@ dependencies {
     implementation 'com.github.WearBlackAllDay:JavaUtils:ab1e0ad736be1d2c2d74c68fa8e9e40e752f2d18'
     include 'com.github.WearBlackAllDay:JavaUtils:ab1e0ad736be1d2c2d74c68fa8e9e40e752f2d18'
     //to change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:1.16.4"
-    mappings "net.fabricmc:yarn:1.16.4+build.7:v2"
-    modImplementation "net.fabricmc:fabric-loader:0.10.8"
+    minecraft "com.mojang:minecraft:1.16.5"
+    mappings "net.fabricmc:yarn:1.16.5+build.6:v2"
+    modImplementation "net.fabricmc:fabric-loader:0.11.3"
 
     //Fabric api
-    //modImplementation "net.fabricmc.fabric-api:fabric-api:0.26.1+1.16"
+    //modImplementation "net.fabricmc.fabric-api:fabric-api:0.32.5+1.16"
     modCompile "net.fabricmc.fabric-api:fabric-game-rule-api-v1:${project.fabric_game_rule_v1_version}"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
