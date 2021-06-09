@@ -1,7 +1,7 @@
-package dimthread.mixin;
+package wearblackallday.dimthread.mixin;
 
-import dimthread.DimThread;
-import dimthread.thread.IMutableMainThread;
+import wearblackallday.dimthread.DimThread;
+import wearblackallday.dimthread.thread.IMutableMainThread;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;

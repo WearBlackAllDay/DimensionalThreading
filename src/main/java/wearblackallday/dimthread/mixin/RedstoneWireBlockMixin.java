@@ -1,4 +1,4 @@
-package dimthread.mixin;
+package wearblackallday.dimthread.mixin;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RedstoneWireBlock;

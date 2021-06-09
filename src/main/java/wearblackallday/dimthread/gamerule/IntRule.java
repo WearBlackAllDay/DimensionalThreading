@@ -1,4 +1,4 @@
-package dimthread.gamerule;
+package wearblackallday.dimthread.gamerule;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.minecraft.server.MinecraftServer;

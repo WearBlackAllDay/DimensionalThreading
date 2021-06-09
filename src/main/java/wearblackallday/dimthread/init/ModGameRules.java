@@ -1,8 +1,8 @@
-package dimthread.init;
+package wearblackallday.dimthread.init;
 
-import dimthread.DimThread;
-import dimthread.gamerule.BoolRule;
-import dimthread.gamerule.IntRule;
+import wearblackallday.dimthread.DimThread;
+import wearblackallday.dimthread.gamerule.BoolRule;
+import wearblackallday.dimthread.gamerule.IntRule;
 import net.minecraft.world.GameRules;
 
 public class ModGameRules {

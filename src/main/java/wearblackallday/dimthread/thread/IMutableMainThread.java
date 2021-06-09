@@ -1,4 +1,4 @@
-package dimthread.thread;
+package wearblackallday.dimthread.thread;
 
 public interface IMutableMainThread {
 

@@ -1,6 +1,6 @@
-package dimthread.mixin;
+package wearblackallday.dimthread.mixin;
 
-import dimthread.thread.IMutableMainThread;
+import wearblackallday.dimthread.thread.IMutableMainThread;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

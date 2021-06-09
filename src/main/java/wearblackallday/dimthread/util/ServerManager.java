@@ -1,9 +1,9 @@
-package dimthread.util;
+package wearblackallday.dimthread.util;
 
-import dimthread.init.ModGameRules;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
-import threading.ThreadPool;
+import wearblackallday.dimthread.init.ModGameRules;
+import wearblackallday.util.ThreadPool;
 
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -37,5 +37,4 @@ public class ServerManager {
 		this.threadPools.put(server, new ThreadPool(value.get()));
 		current.shutdown();
 	}
-
 }

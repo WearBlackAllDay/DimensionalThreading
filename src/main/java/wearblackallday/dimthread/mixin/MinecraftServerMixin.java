@@ -1,7 +1,5 @@
-package dimthread.mixin;
+package wearblackallday.dimthread.mixin;
 
-import dimthread.DimThread;
-import dimthread.util.CrashInfo;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -13,7 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import threading.ThreadPool;
+import wearblackallday.dimthread.DimThread;
+import wearblackallday.dimthread.util.CrashInfo;
+import wearblackallday.util.ThreadPool;
 
 import java.util.Collections;
 import java.util.Iterator;

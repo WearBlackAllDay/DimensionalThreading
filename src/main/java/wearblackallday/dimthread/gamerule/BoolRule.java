@@ -1,4 +1,4 @@
-package dimthread.gamerule;
+package wearblackallday.dimthread.gamerule;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.minecraft.server.MinecraftServer;
@@ -42,5 +42,4 @@ public class BoolRule extends GameRule<GameRules.BooleanRule> {
 			return new BoolRule(this.name, this.category, GameRuleFactory.createBooleanRule(this.initialValue, this.callback));
 		}
 	}
-
 }

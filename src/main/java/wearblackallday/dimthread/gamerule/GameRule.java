@@ -1,6 +1,6 @@
-package dimthread.gamerule;
+package wearblackallday.dimthread.gamerule;
 
-import dimthread.DimThread;
+import wearblackallday.dimthread.DimThread;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.minecraft.world.GameRules;
 

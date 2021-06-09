@@ -1,16 +1,16 @@
-package dimthread;
+package wearblackallday.dimthread;
 
-import dimthread.init.ModGameRules;
-import dimthread.thread.IMutableMainThread;
-import dimthread.util.ServerManager;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import threading.ThreadPool;
+import wearblackallday.dimthread.init.ModGameRules;
+import wearblackallday.dimthread.thread.IMutableMainThread;
+import wearblackallday.dimthread.util.ServerManager;
+import wearblackallday.util.ThreadPool;
 
 public class DimThread implements ModInitializer {
 
-	public static final String MOD_ID = "dimthread";
+	public static final String MOD_ID = "wearblackallday/dimthread";
 	public static final ServerManager MANAGER = new ServerManager();
 
 	@Override
