@@ -59,5 +59,4 @@ public class IntRule extends GameRule<GameRules.IntRule> {
 					this.initialValue, this.minimumValue, this.maximumValue, this.callback));
 		}
 	}
-
 }

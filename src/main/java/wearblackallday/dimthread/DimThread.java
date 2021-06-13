@@ -10,7 +10,7 @@ import wearblackallday.util.ThreadPool;
 
 public class DimThread implements ModInitializer {
 
-	public static final String MOD_ID = "wearblackallday/dimthread";
+	public static final String MOD_ID = "dimthread";
 	public static final ServerManager MANAGER = new ServerManager();
 
 	@Override
