@@ -17,7 +17,8 @@
   ],
   "accessWidener": "dimthread.accesswidener",
   "depends": {
-    "fabricloader": ">=0.12.8",
-    "minecraft": ">=1.18"
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "java": ">=17"
   }
 }
