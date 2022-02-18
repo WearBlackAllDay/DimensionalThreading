@@ -1,5 +1,8 @@
 package wearblackallday.dimthread.mixin;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.FallingBlockEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -7,10 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.FallingBlockEntity;
-import net.minecraft.server.world.ServerWorld;
 import wearblackallday.dimthread.DimThread;
 
 @Mixin(Entity.class)
@@ -21,6 +20,8 @@ public abstract class EntityMixin {
 	@Shadow @Final public abstract boolean isRemoved();
 
 	@Shadow private Entity.RemovalReason removalReason;
+
+	private boolean duped = false;
 
 	/**
 	 * Schedules moving entities between dimensions to the server thread. Once all
@@ -49,7 +50,12 @@ public abstract class EntityMixin {
 	@Redirect(method = "moveToWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isRemoved()Z"))
 	public final boolean forceNotRemoved(Entity entity) {
 		Entity.RemovalReason reason = this.removalReason;
-		if ((((Object) this) instanceof FallingBlockEntity) && (reason == Entity.RemovalReason.DISCARDED)) {
+		if (
+			(Entity) (Object) this instanceof FallingBlockEntity &&
+			reason == Entity.RemovalReason.DISCARDED &&
+			!duped
+		) {
+			duped = true;
 			return false;
 		}
 		return entity.isRemoved();
