@@ -25,7 +25,7 @@ public abstract class RedstoneWireBlockMixin {
 	@Shadow @Final public static IntProperty POWER;
 	@Shadow @Final public static Map<Direction, EnumProperty<WireConnection>> DIRECTION_TO_WIRE_CONNECTION_PROPERTY;
 
-	@Shadow protected abstract BlockState method_27840(BlockView world, BlockState state, BlockPos pos);
+	@Shadow protected abstract BlockState getPlacementState(BlockView world, BlockState state, BlockPos pos);
 
 	/**
 	 * {@code RedstoneWireBlock#wiresGivePower} is not thread-safe since it's a global flag. To ensure
@@ -79,7 +79,7 @@ public abstract class RedstoneWireBlockMixin {
 
 		int i = state.get(POWER);
 		if(i == 0)return 0;
-		return direction != Direction.UP && !this.method_27840(world, state, pos)
+		return direction != Direction.UP && !this.getPlacementState(world, state, pos)
 				.get(DIRECTION_TO_WIRE_CONNECTION_PROPERTY.get(direction.getOpposite())).isConnected() ? 0 : i;
 	}
 
