@@ -48,16 +48,16 @@ public abstract class EntityMixin {
 	 * caused by a sand duplicator.
 	 */
 	@Redirect(method = "moveToWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isRemoved()Z"))
-	public final boolean forceNotRemoved(Entity entity) {
+	public final boolean forceNotRemoved(Entity self) {
 		Entity.RemovalReason reason = this.removalReason;
 		if (
-			(Entity) (Object) this instanceof FallingBlockEntity &&
+			self instanceof FallingBlockEntity &&
 			reason == Entity.RemovalReason.DISCARDED &&
 			!duped
 		) {
 			duped = true;
 			return false;
 		}
-		return entity.isRemoved();
+		return self.isRemoved();
 	}
 }
