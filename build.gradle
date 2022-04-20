@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     implementation "com.github.wearblackallday:JavaUtils:bd58640372"
-    include"com.github.wearblackallday:JavaUtils:bd58640372"
+    include "com.github.wearblackallday:JavaUtils:bd58640372"
 
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

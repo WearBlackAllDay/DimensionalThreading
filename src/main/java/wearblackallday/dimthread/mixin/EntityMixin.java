@@ -12,16 +12,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wearblackallday.dimthread.DimThread;
 
+import org.slf4j.LoggerFactory;
+
 @Mixin(Entity.class)
-public abstract class EntityMixin {
-
-	@Shadow public abstract Entity moveToWorld(ServerWorld destination);
-
-	@Shadow @Final public abstract boolean isRemoved();
-
-	@Shadow private Entity.RemovalReason removalReason;
-
-	private boolean duped = false;
+public abstract class EntityMixin implements Cloneable {
 
 	/**
 	 * Schedules moving entities between dimensions to the server thread. Once all
@@ -38,26 +32,21 @@ public abstract class EntityMixin {
 			return;
 
 		if (DimThread.owns(Thread.currentThread())) {
-			destination.getServer().execute(() -> this.moveToWorld(destination));
+			Entity snapshot = null;
+			try {
+				snapshot = (Entity) (this.clone());
+			} catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e);
+			}
+			final Entity finalSnapshot = snapshot;
+			destination.getServer().execute(
+					() -> finalSnapshot.moveToWorld(destination)
+			);
 			ci.setReturnValue(null);
 		}
 	}
 
-	/**
-	 * If in the moveToWorld method removalReason is DISCARDED, then we assume its
-	 * caused by a sand duplicator.
-	 */
-	@Redirect(method = "moveToWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isRemoved()Z"))
-	public final boolean forceNotRemoved(Entity self) {
-		Entity.RemovalReason reason = this.removalReason;
-		if (
-			self instanceof FallingBlockEntity &&
-			reason == Entity.RemovalReason.DISCARDED &&
-			!duped
-		) {
-			duped = true;
-			return false;
-		}
-		return self.isRemoved();
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }
