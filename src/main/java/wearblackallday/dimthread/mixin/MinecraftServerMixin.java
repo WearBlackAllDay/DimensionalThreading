@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import wearblackallday.dimthread.DimThread;
 import wearblackallday.dimthread.util.CrashInfo;
-import wearblackallday.util.ThreadPool;
+import wearblackallday.dimthread.util.ThreadPool;
 
 import java.util.Collections;
 import java.util.Iterator;

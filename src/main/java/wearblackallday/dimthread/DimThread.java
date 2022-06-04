@@ -6,7 +6,7 @@ import net.minecraft.server.world.ServerWorld;
 import wearblackallday.dimthread.init.ModGameRules;
 import wearblackallday.dimthread.thread.IMutableMainThread;
 import wearblackallday.dimthread.util.ServerManager;
-import wearblackallday.util.ThreadPool;
+import wearblackallday.dimthread.util.ThreadPool;
 
 public class DimThread implements ModInitializer {
 

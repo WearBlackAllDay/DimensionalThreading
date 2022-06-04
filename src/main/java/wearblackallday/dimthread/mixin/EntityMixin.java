@@ -5,11 +5,9 @@ import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wearblackallday.dimthread.DimThread;
@@ -23,6 +21,9 @@ public abstract class EntityMixin implements Cloneable {
 
 	@Shadow @Final
 	abstract void setRemoved(Entity.RemovalReason reason);
+
+	@Shadow
+	abstract void removeFromDimension();
 
 	/**
 	 * Schedules moving entities between dimensions to the server thread. Once all
@@ -58,12 +59,11 @@ public abstract class EntityMixin implements Cloneable {
 	 * @author xiaoyu2006
 	 * @reason If this is a cloned entity, it should not execute removeFromDimension.
 	 */
-	@Overwrite
-	public void removeFromDimension() {
+	@Inject(method = "removeFromDimension", at = @At("HEAD"), cancellable = true)
+	public void clonedDoNotRemove(CallbackInfo ci) {
 		if (this.isCloned) {
-			return;
+			ci.cancel();
 		}
-		this.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
 	}
 
 	protected Object clone() throws CloneNotSupportedException {

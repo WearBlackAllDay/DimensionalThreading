@@ -3,7 +3,7 @@ package wearblackallday.dimthread.util;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 import wearblackallday.dimthread.init.ModGameRules;
-import wearblackallday.util.ThreadPool;
+import wearblackallday.dimthread.util.ThreadPool;
 
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
