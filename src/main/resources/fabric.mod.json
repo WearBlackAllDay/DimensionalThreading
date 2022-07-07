@@ -18,6 +18,6 @@
   "accessWidener": "dimthread.accesswidener",
   "depends": {
     "fabricloader": ">=0.12.8",
-    "minecraft": ">=1.18"
+    "minecraft": ">=1.19"
   }
 }
