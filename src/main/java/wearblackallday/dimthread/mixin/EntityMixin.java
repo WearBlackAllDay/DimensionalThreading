@@ -20,6 +20,8 @@ import net.minecraft.world.dimension.AreaHelper;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -80,6 +82,12 @@ public abstract class EntityMixin {
 
 	@Shadow protected abstract @Nullable TeleportTarget getTeleportTarget(ServerWorld destination);
 
+	@Shadow protected abstract void unsetRemoved();
+
+	@Shadow public abstract void readNbt(NbtCompound nbt);
+
+	@Shadow @Final private static Logger LOGGER;
+
 	/**
 	 * Schedules moving entities between dimensions to the server thread. Once all
 	 * the world finish ticking, {@code moveToWorld()} is processed in a safe manner
@@ -98,7 +106,18 @@ public abstract class EntityMixin {
 			nbtCachedForMoveToWorld = writeNbt(new NbtCompound());
 			uncompletedTeleportTargetForMoveToWorld = createTeleportTargetUncompleted(destination);
 			destination.getServer().execute(
-					() -> this.moveToWorld(destination)
+					() -> {
+						Entity entity = this.moveToWorld(destination);
+						if(entity == null) {
+							this.unsetRemoved();
+							nbtCachedForMoveToWorld.putInt("PortalCooldown", this.netherPortalCooldown);
+							this.readNbt(nbtCachedForMoveToWorld);
+							this.uncompletedTeleportTargetForMoveToWorld = null;
+							this.nbtCachedForMoveToWorld = null;
+							this.world.spawnEntity((Entity) (Object) this);// if the teleporting failed, we need to add it back to the world
+							LOGGER.debug("Failed to teleport {}, return it to it's previous world", this);
+						}
+					}
 			);
 			this.removeFromDimension();
 			ci.setReturnValue(null);
@@ -166,7 +185,7 @@ public abstract class EntityMixin {
 			} else {
 				WorldBorder border = dest.getWorldBorder();
 				double scale = DimensionType.getCoordinateScaleFactor(world.getDimension(), dest.getDimension());
-				BlockPos target = border.clamp(getX() * scale, getY() * scale, getZ() * scale);
+				BlockPos target = border.clamp(getX() * scale, getY(), getZ() * scale);
 				BlockState portalState = world.getBlockState(lastNetherPortalPosition);
 				Direction.Axis axis;
 				Vec3d vec3d;
