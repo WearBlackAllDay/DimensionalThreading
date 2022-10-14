@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This is used for teleport target which is not completed right now, we are going to complete it in another thread
+ * For thread-unsafe operations
  */
 public interface UncompletedTeleportTarget {
 	@Nullable TeleportTarget complete(ServerWorld dest);

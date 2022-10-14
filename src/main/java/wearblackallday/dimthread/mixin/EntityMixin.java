@@ -150,7 +150,9 @@ public abstract class EntityMixin {
 		return instance.isRemoved() && ((EntityMixin) (Object) instance).nbtCachedForMoveToWorld == null;
 	}
 
-	// cache some attributes sync
+	/**
+	 * take a snapshot of some values so that codes modified it later doesn't affect teleporting
+	 */
 	private UncompletedTeleportTarget createTeleportTargetUncompleted(ServerWorld dest) {
 		boolean isEndReturnPortal = world.getRegistryKey() == World.END && dest.getRegistryKey() == World.OVERWORLD;
 		boolean isEndPortal = dest.getRegistryKey() == World.END;
@@ -168,6 +170,7 @@ public abstract class EntityMixin {
 				BlockState portalState = world.getBlockState(lastNetherPortalPosition);
 				Direction.Axis axis;
 				Vec3d vec3d;
+				EntityDimensions dimensions = getDimensions(getPose());
 				if (portalState.contains(Properties.HORIZONTAL_AXIS)) {
 					axis = portalState.get(Properties.HORIZONTAL_AXIS);
 					BlockLocating.Rectangle rectangle = BlockLocating.getLargestRectangle(this.lastNetherPortalPosition, axis, 21, Direction.Axis.Y, 21, (blockPos) -> this.world.getBlockState(blockPos) == portalState);
@@ -176,7 +179,7 @@ public abstract class EntityMixin {
 					axis = Direction.Axis.X;
 					vec3d = new Vec3d(0.5, 0.0, 0.0);
 				}
-				return dest1 -> getPortalRect(dest1, target, isNetherReturnPortal, border).map((rect) -> AreaHelper.getNetherTeleportTarget(dest, rect, axis, vec3d, getDimensions(getPose()), velocity, yaw, pitch)).orElse(null);
+				return dest1 -> getPortalRect(dest1, target, isNetherPortal, border).map((rect) -> AreaHelper.getNetherTeleportTarget(dest1, rect, axis, vec3d, dimensions, velocity, yaw, pitch)).orElse(null);
 			}
 		} else {
 			return dest1 -> {
