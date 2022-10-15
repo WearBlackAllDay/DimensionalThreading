@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import wearblackallday.dimthread.DimThread;
 import wearblackallday.dimthread.util.CrashInfo;
+import wearblackallday.dimthread.util.ServerWorldAccessor;
 import wearblackallday.dimthread.util.ThreadPool;
 
 import java.util.Collections;
@@ -72,6 +73,7 @@ public abstract class MinecraftServerMixin {
 		});
 
 		pool.awaitCompletion();
+		getWorlds().forEach(world -> ((ServerWorldAccessor) world).dimthread_tickTime()); // Time ticking is not thread-safe, fix https://github.com/WearBlackAllDay/DimensionalThreading/issues/72
 
 		if(crash.get() != null) {
 			crash.get().crash("Exception ticking world");

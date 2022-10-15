@@ -115,7 +115,7 @@ public abstract class EntityMixin {
 							this.uncompletedTeleportTargetForMoveToWorld = null;
 							this.nbtCachedForMoveToWorld = null;
 							this.world.spawnEntity((Entity) (Object) this);// if the teleporting failed, we need to add it back to the world
-							LOGGER.debug("Failed to teleport {}, return it to it's previous world", this);
+							LOGGER.debug("Failed to teleport {}, return it to its previous world", this);
 						}
 					}
 			);
