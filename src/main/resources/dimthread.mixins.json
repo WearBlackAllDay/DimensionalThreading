@@ -8,6 +8,7 @@
     "MinecraftServerMixin",
     "RedstoneWireBlockMixin",
     "ServerChunkManagerMixin",
+    "ServerWorldMixin",
     "WorldMixin"
   ],
   "client": [
